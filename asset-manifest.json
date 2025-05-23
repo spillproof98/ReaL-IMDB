@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.css": "/ReaL-IMDB/static/css/main.b872c413.css",
+    "main.js": "/ReaL-IMDB/static/js/main.596b0f55.js",
+    "static/media/homelogo.png": "/ReaL-IMDB/static/media/homelogo.7fb3ce13848b39b26825.png",
+    "index.html": "/ReaL-IMDB/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.b872c413.css",
+    "static/js/main.596b0f55.js"
+  ]
+}
