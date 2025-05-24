@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Navbar from './components/Navbar';
@@ -16,7 +16,7 @@ export default function App() {
   const dispatch = useDispatch();
 
   return (
-    <Router>
+    <>
       <Navbar isLoggedIn={!!token} onLogout={() => dispatch(logout())} />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -25,6 +25,6 @@ export default function App() {
         <Route path="/signup" element={!token ? <SignupPage /> : <Navigate to="/" />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </Router>
+      </>
   );
 }
