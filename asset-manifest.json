@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/ReaL-IMDB/static/css/main.dc40fe85.css",
-    "main.js": "/ReaL-IMDB/static/js/main.caafd8f2.js",
+    "main.js": "/ReaL-IMDB/static/js/main.4501fac8.js",
     "static/media/homelogo.png": "/ReaL-IMDB/static/media/homelogo.7fb3ce13848b39b26825.png",
     "index.html": "/ReaL-IMDB/index.html",
     "main.dc40fe85.css.map": "/ReaL-IMDB/static/css/main.dc40fe85.css.map",
-    "main.caafd8f2.js.map": "/ReaL-IMDB/static/js/main.caafd8f2.js.map"
+    "main.4501fac8.js.map": "/ReaL-IMDB/static/js/main.4501fac8.js.map"
   },
   "entrypoints": [
     "static/css/main.dc40fe85.css",
-    "static/js/main.caafd8f2.js"
+    "static/js/main.4501fac8.js"
   ]
 }
