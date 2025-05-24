@@ -2,7 +2,8 @@
   "name": "tmdb",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://spillproof98.github.io/Real-IMDB",
+  "homepage": "https://spillproof98.github.io/ReaL-IMDB",
+
 
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.0",
