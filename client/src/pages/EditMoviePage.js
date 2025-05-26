@@ -57,7 +57,9 @@ export default function EditMoviePage() {
     }
   };
 
-  const isOwner = user && movie?.uploaderId === user._id;
+  const isOwner = user && String(movie?.uploaderId?._id || movie?.uploaderId) === String(user._id);
+
+
 
   if (loading || !movie) {
     return <p style={{ textAlign: 'center', padding: '2rem' }}>Loading...</p>;

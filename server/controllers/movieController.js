@@ -1,10 +1,15 @@
+const mongoose = require('mongoose');
 const Movie = require('../models/Movie');
 const Producer = require('../models/Producer');
 const Actor = require('../models/Actor');
 
 exports.getAllMovies = async (req, res) => {
   try {
-    const movies = await Movie.find().populate('actors').populate('producer');
+    const movies = await Movie.find()
+      .populate("actors")
+      .populate("producer")
+      .populate("uploaderId", "name email");
+
     res.json(movies);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -27,8 +32,6 @@ exports.addMovie = async (req, res) => {
       ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
       : null;
 
-    console.log("📦 Incoming Payload:", { name, yearOfRelease, plot, poster, producer, actors });
-
     if (!name || !yearOfRelease || !plot || !poster || !producer || !actors || !Array.isArray(actors)) {
       return res.status(400).json({ message: 'Missing required fields or invalid data' });
     }
@@ -47,12 +50,12 @@ exports.addMovie = async (req, res) => {
       poster,
       producer: savedProducer._id,
       actors: savedActors.map(actor => actor._id),
+      uploaderId: req.user._id,
     });
 
     await movie.save();
     res.status(201).json(movie);
   } catch (err) {
-    console.error('❌ Add movie failed:', err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -74,9 +77,13 @@ exports.editMovie = async (req, res) => {
       : undefined;
 
     const movie = await Movie.findById(req.params.id);
-    if (!movie) {
-      return res.status(404).json({ message: 'Movie not found' });
+    if (!movie) return res.status(404).json({ message: 'Movie not found' });
+
+    const requesterId = mongoose.Types.ObjectId.createFromHexString(req.user._id);
+    if (!movie.uploaderId.equals(requesterId)) {
+      return res.status(403).json({ message: 'You are not authorized to edit this movie' });
     }
+
     let producerId;
     if (producer._id) {
       await Producer.findByIdAndUpdate(producer._id, producer, { new: true });
@@ -103,32 +110,33 @@ exports.editMovie = async (req, res) => {
     movie.actors = savedActors;
 
     await movie.save();
+
     const populatedMovie = await Movie.findById(movie._id)
       .populate('producer')
       .populate('actors');
 
     res.status(200).json(populatedMovie);
   } catch (err) {
-    console.error('❌ Edit movie failed:', err);
     res.status(500).json({ message: err.message });
   }
 };
-
 
 exports.deleteMovie = async (req, res) => {
   try {
     const movie = await Movie.findById(req.params.id);
     if (!movie) return res.status(404).json({ message: 'Movie not found' });
 
+    const requesterId = mongoose.Types.ObjectId.createFromHexString(req.user._id);
+    if (!movie.uploaderId.equals(requesterId)) {
+      return res.status(403).json({ message: 'You are not authorized to delete this movie' });
+    }
+
     await movie.deleteOne();
     res.status(200).json({ message: 'Movie deleted' });
   } catch (err) {
-    console.error('❌ Error deleting movie:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
-
-
 
 exports.uploadPoster = (req, res) => {
   if (!req.file) {

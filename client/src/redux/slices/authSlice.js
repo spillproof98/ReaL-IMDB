@@ -20,38 +20,49 @@ export const signup = createAsyncThunk('auth/signup', async (formData, thunkAPI)
 });
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState: {
-    token: localStorage.getItem('token') || null,
+    token: localStorage.getItem("token") || null,
+    user: JSON.parse(localStorage.getItem("user")) || null,
     loading: false,
     error: null,
   },
   reducers: {
     logout(state) {
       state.token = null;
-      localStorage.removeItem('token');
-    }
+      state.user = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    },
+    hydrate(state, action) {
+      state.token = action.payload.token;
+      state.user = action.payload.user;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (state, action) => {
         state.token = action.payload.token;
-        localStorage.setItem('token', action.payload.token);
+        state.user = action.payload.user;
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
         state.error = null;
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.token = action.payload.token;
-        localStorage.setItem('token', action.payload.token);
+        state.user = action.payload.user;
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
         state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
-        state.error = action.payload?.message || 'Login failed';
+        state.error = action.payload?.message || "Login failed";
       })
       .addCase(signup.rejected, (state, action) => {
-        state.error = action.payload?.message || 'Signup failed';
+        state.error = action.payload?.message || "Signup failed";
       });
-  }
+  },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, hydrate } = authSlice.actions;
 export default authSlice.reducer;

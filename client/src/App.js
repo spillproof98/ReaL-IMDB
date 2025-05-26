@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -10,11 +10,23 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SingnupPage';
 import NotFoundPage from './pages/NotFoundPage';
 
-import { logout } from './redux/slices/authSlice';
+import { logout, hydrate } from './redux/slices/authSlice';
 
 export default function App() {
   const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+  const token = localStorage.getItem('token');
+  const user = localStorage.getItem('user');
+
+  if (token && user) {
+    dispatch(hydrate({
+      token,
+      user: JSON.parse(user),
+    }));
+  }
+  }, []);
 
   return (
     <>
