@@ -18,6 +18,7 @@ export default function EditMoviePage() {
     state.movie.movies.find(m => m._id === id)
   );
 
+  const user = useSelector(state => state.auth.user);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,19 +57,48 @@ export default function EditMoviePage() {
     }
   };
 
+  const isOwner = user && movie?.uploaderId === user._id;
+
   if (loading || !movie) {
     return <p style={{ textAlign: 'center', padding: '2rem' }}>Loading...</p>;
   }
 
   return (
-    <div className="form-container">
-      <MovieForm
-        title="Edit Movie"
-        movie={movie}
-        onSubmit={handleSubmit}
-        onDelete={handleDelete}
-        submitText="Update"
-      />
+    <div className="form-container" style={{ position: 'relative' }}>
+      <button
+        onClick={() => navigate('/')}
+        className="modal-close-btn"
+        title="Close"
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          backgroundColor: '#ff9800',
+          color: '#000',
+          fontWeight: 'bold',
+          border: 'none',
+          borderRadius: '50%',
+          width: '32px',
+          height: '32px',
+          cursor: 'pointer'
+        }}
+      >
+        X
+      </button>
+
+      {isOwner ? (
+        <MovieForm
+          title="Edit Movie"
+          movie={movie}
+          onSubmit={handleSubmit}
+          onDelete={handleDelete}
+          submitText="Update"
+        />
+      ) : (
+        <p style={{ textAlign: 'center', color: 'orange', fontWeight: 'bold' }}>
+          You are not authorized to edit this movie.
+        </p>
+      )}
     </div>
   );
 }
