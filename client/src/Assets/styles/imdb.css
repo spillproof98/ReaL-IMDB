@@ -97,7 +97,7 @@ body {
   position: relative;
 }
 
-.modal-content button {
+.modal-close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -109,6 +109,41 @@ body {
   width: 32px;
   height: 32px;
   cursor: pointer;
+}
+
+.modal-poster {
+  width: 220px;
+  height: 330px;
+  object-fit: cover;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 8px;
+  background-color: #222;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.modal-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #ff9800;
+  color: #000;
+}
+
+.delete-btn {
+  background-color: #e53935;
+  color: white;
 }
 
 .movie-list {
@@ -146,29 +181,6 @@ body {
   font-size: 1rem;
   margin-top: 0.5rem;
   color: #ff9800;
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .styled-search-bar {
-    margin-top: 1rem;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    width: 100%;
-    margin-top: 1rem;
-  }
-
-  .movie-card,
-  .favorite-card {
-    width: 100%;
-    max-width: 300px;
-  }
 }
 
 .auth-form,
@@ -209,18 +221,6 @@ body {
   color: #fff;
 }
 
-.form-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.form-row > div {
-  flex: 1;
-  min-width: 150px;
-}
-
 input[type="file"] {
   padding: 0.5rem;
   background-color: transparent;
@@ -244,6 +244,33 @@ input[type="file"] {
   background-color: #ffa726;
 }
 
+.delete-movie-btn {
+  background-color: #e53935;
+  color: white;
+  padding: 0.7rem 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.delete-movie-btn:hover {
+  background-color: #c62828;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form-row > div {
+  flex: 1;
+  min-width: 150px;
+}
+
 .actor-row {
   display: flex;
   flex-wrap: wrap;
@@ -260,6 +287,7 @@ input[type="file"] {
   border-radius: 4px;
   cursor: pointer;
 }
+
 .remove-btn:hover {
   background-color: #c62828;
 }
@@ -289,11 +317,33 @@ input[type="file"] {
   cursor: not-allowed;
 }
 
-
 .pagination button:hover:not(:disabled) {
   background-color: #4238a0;
 }
 
 .pagination span {
   font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .styled-search-bar {
+    margin-top: 1rem;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .movie-card,
+  .favorite-card {
+    width: 100%;
+    max-width: 300px;
+  }
 }

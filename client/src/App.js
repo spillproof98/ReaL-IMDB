@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import AddMoviePage from './pages/AddMoviePage';
+import EditMoviePage from './pages/EditMoviePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SingnupPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -21,10 +22,11 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/add" element={token ? <AddMoviePage /> : <Navigate to="/login" />} />
+        <Route path="/movies/edit/:id" element={token ? <EditMoviePage /> : <Navigate to="/login" />} />
         <Route path="/login" element={!token ? <LoginPage /> : <Navigate to="/" />} />
         <Route path="/signup" element={!token ? <SignupPage /> : <Navigate to="/" />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-      </>
+    </>
   );
 }

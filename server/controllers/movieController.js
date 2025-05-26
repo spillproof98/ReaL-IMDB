@@ -57,15 +57,78 @@ exports.addMovie = async (req, res) => {
   }
 };
 
-
 exports.editMovie = async (req, res) => {
   try {
-    const updated = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updated);
+    const { name, yearOfRelease, plot } = req.body;
+
+    let producer, actors;
+    try {
+      producer = JSON.parse(req.body.producer);
+      actors = JSON.parse(req.body.actors);
+    } catch (err) {
+      return res.status(400).json({ message: 'Invalid JSON in producer or actors' });
+    }
+
+    const poster = req.file
+      ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+      : undefined;
+
+    const movie = await Movie.findById(req.params.id);
+    if (!movie) {
+      return res.status(404).json({ message: 'Movie not found' });
+    }
+    let producerId;
+    if (producer._id) {
+      await Producer.findByIdAndUpdate(producer._id, producer, { new: true });
+      producerId = producer._id;
+    } else {
+      const newProducer = new Producer(producer);
+      await newProducer.save();
+      producerId = newProducer._id;
+    }
+
+    const savedActors = await Promise.all(
+      actors.filter(actor => actor.name).map(actor => {
+        return actor._id
+          ? Promise.resolve(actor._id)
+          : new Actor(actor).save().then(a => a._id);
+      })
+    );
+
+    movie.name = name;
+    movie.yearOfRelease = yearOfRelease;
+    movie.plot = plot;
+    if (poster) movie.poster = poster;
+    movie.producer = producerId;
+    movie.actors = savedActors;
+
+    await movie.save();
+    const populatedMovie = await Movie.findById(movie._id)
+      .populate('producer')
+      .populate('actors');
+
+    res.status(200).json(populatedMovie);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error('❌ Edit movie failed:', err);
+    res.status(500).json({ message: err.message });
   }
 };
+
+
+exports.deleteMovie = async (req, res) => {
+  try {
+    const movie = await Movie.findById(req.params.id);
+    if (!movie) return res.status(404).json({ message: 'Movie not found' });
+
+    await movie.deleteOne();
+    res.status(200).json({ message: 'Movie deleted' });
+  } catch (err) {
+    console.error('❌ Error deleting movie:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
 
 exports.uploadPoster = (req, res) => {
   if (!req.file) {
