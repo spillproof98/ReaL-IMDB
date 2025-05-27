@@ -5,21 +5,25 @@ import logo from '../Assets/images/homelogo.png';
 const base = '/ReaL-IMDB/#';
 
 export default function Navbar({ isLoggedIn, onLogout }) {
+  const makeHref = (path = '') => `${base}${path}`;
+
   return (
-    <nav className="navbar">
-      <a href={`${base}/`}><img src={logo} alt="IMDb Logo" height="30" /></a>
+    <nav className="navbar" role="navigation" aria-label="Main Navigation">
+      <a href={makeHref('/')}>
+        <img src={logo} alt="IMDb Logo" height="30" />
+      </a>
       <SearchBar />
       <div className="nav-links">
-        <a href={`${base}/`}>Home</a>
+        <a href={makeHref('/')}>Home</a>
         {isLoggedIn ? (
           <>
-            <a href={`${base}/add`}>Upload Movie</a>
-            <button onClick={onLogout}>Logout</button>
+            <a href={makeHref('/add')}>Upload Movie</a>
+            <button onClick={onLogout} aria-label="Logout">Logout</button>
           </>
         ) : (
           <>
-            <a href={`${base}/login`}>Login</a>
-            <a href={`${base}/signup`}>Sign Up</a>
+            <a href={makeHref('/login')}>Login</a>
+            <a href={makeHref('/signup')}>Sign Up</a>
           </>
         )}
       </div>

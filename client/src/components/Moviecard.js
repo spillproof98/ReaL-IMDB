@@ -1,16 +1,23 @@
 import React from 'react';
 
+const fallbackImage = '/images/movie_page.png'; 
+
 export default function MovieCard({ movie, onClick }) {
   const posterUrl = movie.tmdb
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-    : movie.poster || '/images/movie_page.png';
+    : movie.poster || fallbackImage;
 
   return (
     <div className="movie-card" onClick={onClick} style={{ cursor: 'pointer' }}>
       <img
         src={posterUrl}
         alt={movie.name || movie.title}
-        onError={(e) => { e.target.src = '/images/movie_page.png'; }}
+        onError={(e) => {
+          if (!e.target.dataset.fallback) {
+            e.target.dataset.fallback = 'true';
+            e.target.src = fallbackImage;
+          }
+        }}
         style={{
           width: '100%',
           height: '270px',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { deleteMovie } from '../redux/slices/movieSlice';
@@ -43,11 +43,21 @@ export default function MovieModal({ movie, onClose }) {
         <button onClick={onClose} className="modal-close-btn">X</button>
 
         {movie.poster && (
-          <img src={movie.poster} alt={movie.name} className="modal-poster" />
+          <img
+            src={movie.poster}
+            alt={movie.name}
+            className="modal-poster"
+            onError={(e) => {
+              if (!e.target.dataset.fallback) {
+                e.target.dataset.fallback = 'true';
+                e.target.src = '/images/movie_page.png'; // fallback image
+              }
+            }}
+          />
         )}
 
         <h2 className="movie-title">
-          {movie.name} ({movie.yearOfRelease})
+          {movie.name} ({movie.yearOfRelease || movie.release_date?.split('-')[0]})
         </h2>
 
         <div className="modal-section">
@@ -62,8 +72,10 @@ export default function MovieModal({ movie, onClose }) {
                   color: '#ff9800',
                   border: 'none',
                   fontWeight: 'bold',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  marginLeft: '0.5rem'
                 }}
+                aria-label={expanded ? 'See less of plot' : 'See more of plot'}
               >
                 {expanded ? 'See less' : 'See more'}
               </button>
@@ -75,42 +87,26 @@ export default function MovieModal({ movie, onClose }) {
           <div className="modal-section">
             <h4>Producer</h4>
             <p><strong>Name:</strong> {movie.producer.name}</p>
-            <p><strong>Gender:</strong> {movie.producer.gender}</p>
-            <p><strong>DOB:</strong> {new Date(movie.producer.dob).toLocaleDateString()}</p>
-            <p><strong>Bio:</strong> {movie.producer.bio}</p>
+            <p><strong>Gender:</strong> {movie.producer.gender || 'N/A'}</p>
           </div>
         )}
 
-        {movie.actors?.length > 0 && (
+        {movie.actors && movie.actors.length > 0 && (
           <div className="modal-section">
             <h4>Actors</h4>
-            {movie.actors.map((actor, index) => (
-              <div key={index} className="modal-actor">
-                <p><strong>Name:</strong> {actor.name}</p>
-                <p><strong>Gender:</strong> {actor.gender}</p>
-                <p><strong>DOB:</strong> {new Date(actor.dob).toLocaleDateString()}</p>
-                <p><strong>Bio:</strong> {actor.bio}</p>
-                {index < movie.actors.length - 1 && <hr />}
-              </div>
-            ))}
+            <p>{movie.actors.map(actor => actor.name).join(', ')}</p>
           </div>
         )}
 
-        {user && isOwner && (
-          <div className="modal-footer">
-            <button className="modal-btn edit-btn" onClick={handleEdit}>
-              Update
+        {isOwner && (
+          <div className="modal-actions" style={{ marginTop: '1rem' }}>
+            <button onClick={handleEdit} style={{ marginRight: '1rem' }}>
+              Edit
             </button>
-            <button className="modal-btn delete-btn" onClick={handleDelete}>
-              Delete Movie
+            <button onClick={handleDelete} style={{ backgroundColor: '#d32f2f', color: 'white' }}>
+              Delete
             </button>
           </div>
-        )}
-
-        {!isOwner && user && (
-          <p style={{ color: '#ccc', marginTop: '1.5rem', fontStyle: 'italic' }}>
-            Only the uploader can edit or delete this movie.
-          </p>
         )}
       </div>
     </div>
