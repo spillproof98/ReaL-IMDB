@@ -3,6 +3,8 @@ const Movie = require('../models/Movie');
 const Producer = require('../models/Producer');
 const Actor = require('../models/Actor');
 
+const BASE_URL = 'https://real-imdb-3.onrender.com';
+
 exports.getAllMovies = async (req, res) => {
   try {
     const movies = await Movie.find()
@@ -29,7 +31,7 @@ exports.addMovie = async (req, res) => {
     }
 
     const poster = req.file
-      ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+      ? `${BASE_URL}/uploads/${req.file.filename}`
       : null;
 
     if (!name || !yearOfRelease || !plot || !poster || !producer || !actors || !Array.isArray(actors)) {
@@ -73,7 +75,7 @@ exports.editMovie = async (req, res) => {
     }
 
     const poster = req.file
-      ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+      ? `${BASE_URL}/uploads/${req.file.filename}`
       : undefined;
 
     const movie = await Movie.findById(req.params.id);
@@ -142,6 +144,7 @@ exports.uploadPoster = (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
-  const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+
+  const imageUrl = `${BASE_URL}/uploads/${req.file.filename}`;
   res.status(200).json({ url: imageUrl });
 };
