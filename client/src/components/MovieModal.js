@@ -24,9 +24,7 @@ export default function MovieModal({ movie, onClose }) {
   const isLong = words.length > 40;
   const shortPlot = isLong ? words.slice(0, 40).join(' ') + '...' : plot;
 
-  const handleEdit = () => {
-    navigate(`/movies/edit/${movie._id}`);
-  };
+  const handleEdit = () => navigate(`/movies/edit/${movie._id}`);
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this movie?')) {
@@ -34,6 +32,9 @@ export default function MovieModal({ movie, onClose }) {
       onClose();
     }
   };
+
+  const formatDate = (dateStr) =>
+    dateStr ? new Date(dateStr).toISOString().split('T')[0] : 'N/A';
 
   if (!movie) return null;
 
@@ -50,7 +51,7 @@ export default function MovieModal({ movie, onClose }) {
             onError={(e) => {
               if (!e.target.dataset.fallback) {
                 e.target.dataset.fallback = 'true';
-                e.target.src = '/images/movie_page.png'; // fallback image
+                e.target.src = '/images/movie_page.png';
               }
             }}
           />
@@ -75,7 +76,6 @@ export default function MovieModal({ movie, onClose }) {
                   cursor: 'pointer',
                   marginLeft: '0.5rem'
                 }}
-                aria-label={expanded ? 'See less of plot' : 'See more of plot'}
               >
                 {expanded ? 'See less' : 'See more'}
               </button>
@@ -88,22 +88,33 @@ export default function MovieModal({ movie, onClose }) {
             <h4>Producer</h4>
             <p><strong>Name:</strong> {movie.producer.name}</p>
             <p><strong>Gender:</strong> {movie.producer.gender || 'N/A'}</p>
+            <p><strong>DOB:</strong> {formatDate(movie.producer.dob)}</p>
+            <p><strong>Bio:</strong> {movie.producer.bio || 'N/A'}</p>
           </div>
         )}
 
         {movie.actors && movie.actors.length > 0 && (
           <div className="modal-section">
             <h4>Actors</h4>
-            <p>{movie.actors.map(actor => actor.name).join(', ')}</p>
+            {movie.actors.map((actor, i) => (
+              <div key={i} className="modal-actor">
+                <p><strong>Name:</strong> {actor.name}</p>
+                <p><strong>Gender:</strong> {actor.gender || 'N/A'}</p>
+                <p><strong>DOB:</strong> {formatDate(actor.dob)}</p>
+                <p><strong>Bio:</strong> {actor.bio || 'N/A'}</p>
+                {i !== movie.actors.length - 1 && <hr />}
+              </div>
+            ))}
           </div>
         )}
 
         {isOwner && (
           <div className="modal-actions" style={{ marginTop: '1rem' }}>
-            <button onClick={handleEdit} style={{ marginRight: '1rem' }}>
-              Edit
-            </button>
-            <button onClick={handleDelete} style={{ backgroundColor: '#d32f2f', color: 'white' }}>
+            <button onClick={handleEdit} style={{ marginRight: '1rem' }}>Edit</button>
+            <button
+              onClick={handleDelete}
+              style={{ backgroundColor: '#d32f2f', color: 'white' }}
+            >
               Delete
             </button>
           </div>
