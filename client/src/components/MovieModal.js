@@ -41,24 +41,32 @@ export default function MovieModal({ movie, onClose }) {
   return (
     <div className="modal">
       <div className="modal-content">
-        <button onClick={onClose} className="modal-close-btn">X</button>
+        <button onClick={onClose} className="modal-close-btn">
+          X
+        </button>
 
         {movie.poster && (
           <img
-            src={movie.poster}
+            src={
+              movie.poster.startsWith("http")
+                ? movie.poster
+                : `https://real-imdb-3.onrender.com${movie.poster}`
+            }
             alt={movie.name}
             className="modal-poster"
+            loading="lazy"
             onError={(e) => {
               if (!e.target.dataset.fallback) {
-                e.target.dataset.fallback = 'true';
-                e.target.src = '/images/movie_page.png';
+                e.target.dataset.fallback = "true";
+                e.target.src = "/images/movie_page.png";
               }
             }}
           />
         )}
 
         <h2 className="movie-title">
-          {movie.name} ({movie.yearOfRelease || movie.release_date?.split('-')[0]})
+          {movie.name} (
+          {movie.yearOfRelease || movie.release_date?.split("-")[0]})
         </h2>
 
         <div className="modal-section">
@@ -69,15 +77,15 @@ export default function MovieModal({ movie, onClose }) {
                 onClick={() => setExpanded(!expanded)}
                 className="modal-btn"
                 style={{
-                  background: 'none',
-                  color: '#ff9800',
-                  border: 'none',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  marginLeft: '0.5rem'
+                  background: "none",
+                  color: "#ff9800",
+                  border: "none",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  marginLeft: "0.5rem",
                 }}
               >
-                {expanded ? 'See less' : 'See more'}
+                {expanded ? "See less" : "See more"}
               </button>
             )}
           </p>
@@ -86,10 +94,18 @@ export default function MovieModal({ movie, onClose }) {
         {movie.producer && (
           <div className="modal-section">
             <h4>Producer</h4>
-            <p><strong>Name:</strong> {movie.producer.name}</p>
-            <p><strong>Gender:</strong> {movie.producer.gender || 'N/A'}</p>
-            <p><strong>DOB:</strong> {formatDate(movie.producer.dob)}</p>
-            <p><strong>Bio:</strong> {movie.producer.bio || 'N/A'}</p>
+            <p>
+              <strong>Name:</strong> {movie.producer.name}
+            </p>
+            <p>
+              <strong>Gender:</strong> {movie.producer.gender || "N/A"}
+            </p>
+            <p>
+              <strong>DOB:</strong> {formatDate(movie.producer.dob)}
+            </p>
+            <p>
+              <strong>Bio:</strong> {movie.producer.bio || "N/A"}
+            </p>
           </div>
         )}
 
@@ -98,10 +114,18 @@ export default function MovieModal({ movie, onClose }) {
             <h4>Actors</h4>
             {movie.actors.map((actor, i) => (
               <div key={i} className="modal-actor">
-                <p><strong>Name:</strong> {actor.name}</p>
-                <p><strong>Gender:</strong> {actor.gender || 'N/A'}</p>
-                <p><strong>DOB:</strong> {formatDate(actor.dob)}</p>
-                <p><strong>Bio:</strong> {actor.bio || 'N/A'}</p>
+                <p>
+                  <strong>Name:</strong> {actor.name}
+                </p>
+                <p>
+                  <strong>Gender:</strong> {actor.gender || "N/A"}
+                </p>
+                <p>
+                  <strong>DOB:</strong> {formatDate(actor.dob)}
+                </p>
+                <p>
+                  <strong>Bio:</strong> {actor.bio || "N/A"}
+                </p>
                 {i !== movie.actors.length - 1 && <hr />}
               </div>
             ))}
@@ -109,11 +133,13 @@ export default function MovieModal({ movie, onClose }) {
         )}
 
         {isOwner && (
-          <div className="modal-actions" style={{ marginTop: '1rem' }}>
-            <button onClick={handleEdit} style={{ marginRight: '1rem' }}>Edit</button>
+          <div className="modal-actions" style={{ marginTop: "1rem" }}>
+            <button onClick={handleEdit} style={{ marginRight: "1rem" }}>
+              Edit
+            </button>
             <button
               onClick={handleDelete}
-              style={{ backgroundColor: '#d32f2f', color: 'white' }}
+              style={{ backgroundColor: "#d32f2f", color: "white" }}
             >
               Delete
             </button>
